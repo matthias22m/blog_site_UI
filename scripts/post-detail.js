@@ -1,30 +1,32 @@
 document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('id');
-    var author;
+    var author={'email':null};
     if (postId) {
         var token = localStorage.getItem("token");
+        if (token != null) {
 
-        fetch('http://127.0.0.1:8000/auth/user/', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+            fetch('http://127.0.0.1:8000/auth/user/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
-                return response.json();
             })
-            .then(user => {
-                author = user['0'];
-            })
-            .catch(error => {
-                console.error('There has been a problem with your fetch operation:', error);
-            });
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(user => {
+                    author = user['0'];
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
 
+        }
         const apiUrl = `http://127.0.0.1:8000/posts/${postId}`;
 
         fetch(apiUrl)
@@ -61,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const contentElement = document.createElement('p');
                 contentElement.textContent = postDetail.content;
                 contentElement.style.marginTop = '1em';
-                
+
                 const categoryElement = document.createElement('p');
                 categoryElement.textContent = postDetail.category;
                 categoryElement.style.fontStyle = 'italic';
